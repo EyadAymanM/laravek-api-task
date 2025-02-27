@@ -6,6 +6,7 @@ use App\Models\Venue;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Support\Facades\Gate;
 
 class VenueController extends Controller implements HasMiddleware
 {
@@ -54,12 +55,16 @@ class VenueController extends Controller implements HasMiddleware
      */
     public function update(Request $request, Venue $venue)
     {
+        Gate::authorize('modify', $venue);
+
         $fields = $request->validate([
             'name' => 'string|max:255',
             'location' => 'string',
             'capacity' => 'integer'
         ]);
+
         $venue->update($fields);
+        
         return response(['message' => 'updated successfully', 'data' => $venue], 202);
     }
 
@@ -68,7 +73,10 @@ class VenueController extends Controller implements HasMiddleware
      */
     public function destroy(Venue $venue)
     {
+        Gate::authorize('modify', $venue);
+
         $venue->delete();
+
         return response()->json(['message' => 'deleted successfully'], 204);
     }
 }

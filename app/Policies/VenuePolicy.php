@@ -3,64 +3,15 @@
 namespace App\Policies;
 
 use App\Models\User;
-use App\Models\venue;
+use App\Models\Venue;
 use Illuminate\Auth\Access\Response;
 
 class VenuePolicy
 {
-    /**
-     * Determine whether the user can view any models.
-     */
-    public function viewAny(User $user): bool
+    public function modify(User $user, Venue $venue): Response
     {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can view the model.
-     */
-    public function view(User $user, venue $venue): bool
-    {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can create models.
-     */
-    public function create(User $user): bool
-    {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can update the model.
-     */
-    public function update(User $user, venue $venue): bool
-    {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can delete the model.
-     */
-    public function delete(User $user, venue $venue): bool
-    {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, venue $venue): bool
-    {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, venue $venue): bool
-    {
-        return false;
+        return $user->id === $venue->user_id
+            ? Response::allow()
+            : Response::deny('Not Authorized for this action');
     }
 }
