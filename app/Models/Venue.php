@@ -14,4 +14,9 @@ class Venue extends Model
         'location',
         'capacity'
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

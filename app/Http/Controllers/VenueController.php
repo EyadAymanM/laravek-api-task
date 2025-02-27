@@ -4,9 +4,19 @@ namespace App\Http\Controllers;
 
 use App\Models\Venue;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class VenueController extends Controller
+class VenueController extends Controller implements HasMiddleware
 {
+
+    public static function middleware()
+    {
+        return [
+            new Middleware('auth:sanctum', except: ['index', 'show'])
+        ];
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -25,7 +35,9 @@ class VenueController extends Controller
             'location' => 'required|string',
             'capacity' => 'required|integer'
         ]);
-        $venue = Venue::create($fields);
+
+        $venue = $request->user()->venues()->create($fields);
+
         return $venue;
     }
 
@@ -48,7 +60,7 @@ class VenueController extends Controller
             'capacity' => 'integer'
         ]);
         $venue->update($fields);
-        return $venue;
+        return response(['message' => 'updated successfully', 'data' => $venue], 202);
     }
 
     /**
