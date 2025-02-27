@@ -1,66 +1,138 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Laravel API Task
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+This is a simple Laravel API project that manages venues. The project utilizes Laravel's authentication, middleware, and routing features to provide secure access to venue data.
 
-## About Laravel
+## 🚀 Features
+- Authentication using **Sanctum**
+- CRUD operations for **Venues**
+- Middleware protection for API routes
+- JSON API responses
+- Docker support for MySQL database
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🛠 Installation
+### 1️⃣ Clone the Repository
+```sh
+ git clone https://github.com/EyadAymanM/laravek-api-task.git
+ cd laravek-api-task
+```
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### 2️⃣ Install Dependencies
+```sh
+composer install
+```
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 3️⃣ Set Up MySQL Database with Docker (Recommended)
+If you don’t have MySQL installed, you can use Docker to set up a MySQL database easily.
 
-## Learning Laravel
+#### Install Docker:
+- **Windows**: Download and install [Docker Desktop](https://www.docker.com/products/docker-desktop/).
+- **Linux**: Install Docker using your package manager. For example:
+  ```sh
+  sudo apt update && sudo apt install docker.io -y
+  sudo systemctl start docker
+  sudo systemctl enable docker
+  ```
+### Change the values of enviroment variables passed in `docker-compose.yml`
+```yml
+environment:
+      MYSQL_DATABASE: your_database_name
+      MYSQL_USER: user
+      MYSQL_PASSWORD: user_password
+      MYSQL_ROOT_PASSWORD: root_password
+```
+Update your `.env` file with the same as above credentials:
+```env
+DB_CONNECTION=mysql 
+DB_HOST=127.0.0.1 #this is set to localhost to access it form the docker container up in
+DB_PORT=3306
+DB_DATABASE=your_database_name
+DB_USERNAME=user
+DB_PASSWORD=user_password
+```
+#### Run MySQL Container:
+```sh
+docker-compose up -d # -d flag to start the container in the background
+```
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+###  Set Up Environment
+```sh
+cp .env.example .env
+php artisan key:generate
+```
+Update your `.env` file with the database credentials.
 
-## Laravel Sponsors
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### 4️⃣ Run Migrations
+```sh
+php artisan migrate 
+```
 
-### Premium Partners
+### 5️⃣ Serve the Application
+```sh
+php artisan serve
+```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+## 🔑 Authentication
+The API uses **Laravel Sanctum** for authentication. To get a token, register a user and log in.
 
-## Contributing
+### Register a User
+```http
+POST /api/register
+```
+```json
+{
+  "name": "John Doe",
+  "email": "john@example.com",
+  "password": "password",
+  "password_confirmation": "password"
+}
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Login
+```http
+POST /api/login
+```
+```json
+{
+  "email": "john@example.com",
+  "password": "password"
+}
+```
+**Response:**
+```json
+{
+  "user": "user data object",
+  "access_token": "your-access-token"
+}
+```
+Use this token in **Authorization** headers:
+```http
+Authorization: Bearer your-access-token
+```
 
-## Code of Conduct
+## 📌 API Endpoints
+### Public Routes (No Authentication Required)
+| Method | Endpoint         | Description        |
+|--------|------------------|--------------------|
+| GET    | /api/venues      | List all venues    |
+| GET    | /api/venues/{id} | Show venue details |
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### Protected Routes (Require Authentication)
+| Method | Endpoint         | Description        |
+|--------|------------------|--------------------|
+| POST   | /api/venues      | Create a new venue |
+| PUT    | /api/venues/{id} | Update a venue     |
+| DELETE | /api/venues/{id} | Delete a venue     |
 
-## Security Vulnerabilities
+## 🛠 Middleware
+Some routes are protected using `auth:sanctum` middleware. Public endpoints (`index` and `show`) are excluded.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## Testing the API
+- To test API requests, use **Postman** or **cURL**.
 
-## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+---
+ _Let me know if you need further tweaks! 💡_
+
